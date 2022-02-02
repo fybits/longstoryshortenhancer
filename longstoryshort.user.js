@@ -1,18 +1,18 @@
 // ==UserScript==
 // @name         LongStoryShort Enhancer
 // @namespace    http://tampermonkey.net/
-// @version      0.2.1
-// @description  try to take over the world!
-// @author       You
+// @version      0.2.2
+// @description  Makes the thing better, I guess.
+// @author       fybits
 // @match        https://longstoryshort.app/characters/builder/
 // @icon         <$ICON$>
 // @grant        none
 // @require      spells.js
 // ==/UserScript==
 
-  function addStyles() {
-    const styleEl = document.createElement('style');
-    styleEl.innerHTML = `
+function addStyles() {
+  const styleEl = document.createElement('style');
+  styleEl.innerHTML = `
       div#spell-info-pop-up {
         position: fixed;
         display: none;
@@ -49,55 +49,53 @@
         margin-bottom: 0;
       }
     `;
-    document.body.appendChild(styleEl);
-  }
+  document.body.appendChild(styleEl);
+}
 
 
-  function createSpellInfoPopUp() {
-    const base = document.createElement('div');
-    base.id = 'spell-info-pop-up';
-    return document.body.appendChild(base);
-  }
+function createSpellInfoPopUp() {
+  const base = document.createElement('div');
+  base.id = 'spell-info-pop-up';
+  return document.body.appendChild(base);
+}
 
-  (function () {
-    'use strict';
+(function () {
+  'use strict';
 
-    window.onload = () => {
-      console.log('Работаем');
+  console.log('Работаем');
 
-      const spellPopUp = createSpellInfoPopUp();
-      addStyles();
+  const spellPopUp = createSpellInfoPopUp();
+  addStyles();
 
-      document.addEventListener('mousemove', (event) => {
-        if (!event.ctrlKey) {
-          const posY = event.clientY - Math.max(0, 10 + (event.clientY + spellPopUp.clientHeight) - window.innerHeight);
-          const posX = event.clientX - Math.max(0, 40 + (event.clientX + spellPopUp.clientWidth) - window.innerWidth);
-          spellPopUp.style.top = `${posY}px`;
-          spellPopUp.style.left = `${posX}px`;
-        }
-      });
-
-      setTimeout(() => {
-        const spellsNodes = document.querySelectorAll('.char-sheet__spells .ProseMirror');
-        for (let spellNode of spellsNodes.values()) {
-          for (let i = 0; i < spellNode.children.length; i++) {
-            const item = spellNode.children[i];
-            if (item.innerText.trim().length > 0) {
-              item.addEventListener('mouseover', (event) => {
-                if (!event.ctrlKey) {
-                  spellPopUp.style.display = 'block';
-                  spellPopUp.innerHTML = spells.find((spell) => spell.includes(event.target.innerText));
-                }
-              })
-              item.addEventListener('mouseleave', (event) => {
-                if (!event.ctrlKey) {
-                  spellPopUp.style.display = 'none';
-                }
-              })
-            }
-          }
-        }
-      }, 1000);
+  document.addEventListener('mousemove', (event) => {
+    if (!event.ctrlKey) {
+      const posY = event.clientY - Math.max(0, 10 + (event.clientY + spellPopUp.clientHeight) - window.innerHeight);
+      const posX = event.clientX - Math.max(0, 40 + (event.clientX + spellPopUp.clientWidth) - window.innerWidth);
+      spellPopUp.style.top = `${posY}px`;
+      spellPopUp.style.left = `${posX}px`;
     }
+  });
 
-  })();
+  setTimeout(() => {
+    const spellsNodes = document.querySelectorAll('.char-sheet__spells .ProseMirror');
+    for (let spellNode of spellsNodes.values()) {
+      for (let i = 0; i < spellNode.children.length; i++) {
+        const item = spellNode.children[i];
+        if (item.innerText.trim().length > 0) {
+          item.addEventListener('mouseover', (event) => {
+            if (!event.ctrlKey) {
+              spellPopUp.style.display = 'block';
+              spellPopUp.innerHTML = spells.find((spell) => spell.includes(event.target.innerText));
+            }
+          })
+          item.addEventListener('mouseleave', (event) => {
+            if (!event.ctrlKey) {
+              spellPopUp.style.display = 'none';
+            }
+          })
+        }
+      }
+    }
+  }, 3000);
+
+})();
