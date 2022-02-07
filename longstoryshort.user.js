@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LongStoryShort Enhancer
 // @namespace    http://tampermonkey.net/
-// @version      0.2.2
+// @version      0.2.3
 // @description  Makes the thing better, I guess.
 // @author       fybits
 // @match        https://longstoryshort.app/characters/builder/
@@ -78,23 +78,25 @@ function createSpellInfoPopUp() {
 
   setTimeout(() => {
     const spellsNodes = document.querySelectorAll('.char-sheet__spells .ProseMirror');
+
     for (let spellNode of spellsNodes.values()) {
-      for (let i = 0; i < spellNode.children.length; i++) {
-        const item = spellNode.children[i];
-        if (item.innerText.trim().length > 0) {
-          item.addEventListener('mouseover', (event) => {
-            if (!event.ctrlKey) {
-              spellPopUp.style.display = 'block';
-              spellPopUp.innerHTML = spells.find((spell) => spell.includes(event.target.innerText));
-            }
-          })
-          item.addEventListener('mouseleave', (event) => {
-            if (!event.ctrlKey) {
-              spellPopUp.style.display = 'none';
-            }
-          })
+      spellNode.addEventListener('mouseover', (event) => {
+        const item = event.target;
+        if (event.ctrlKey) return;
+        if (item.tagName !== 'div' && item.innerText.trim().length > 0) {
+          const spell = spells.find((spell) => spell.includes(item.innerText));
+          if (spell) {
+            spellPopUp.style.display = 'block';
+            spellPopUp.innerHTML = spell;
+            return;
+          }
         }
-      }
+        spellPopUp.style.display = 'none';
+      })
+      spellNode.addEventListener('mouseleave', (event) => {
+        if (!event.ctrlKey)
+          spellPopUp.style.display = 'none';
+      })
     }
   }, 3000);
 
