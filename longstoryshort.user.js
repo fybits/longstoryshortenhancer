@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         LongStoryShort Enhancer
 // @namespace    http://tampermonkey.net/
-// @version      0.2.3
+// @version      0.3.0
 // @description  Makes the thing better, I guess.
 // @author       fybits
-// @match        https://longstoryshort.app/characters/builder/
+// @match        https://longstoryshort.app/characters/digital/*
 // @icon         <$ICON$>
 // @grant        none
-// @require      spells.js
+// @require      https://raw.githubusercontent.com/fybits/longstoryshortenhancer/master/spells.js
 // ==/UserScript==
 
 function addStyles() {
@@ -77,14 +77,14 @@ function createSpellInfoPopUp() {
   });
 
   setTimeout(() => {
-    const spellsNodes = document.querySelectorAll('.char-sheet__spells .ProseMirror');
+    const spellsNodes = document.querySelectorAll('.digital-text-block__textarea .ProseMirror p');
 
     for (let spellNode of spellsNodes.values()) {
       spellNode.addEventListener('mouseover', (event) => {
         const item = event.target;
         if (event.ctrlKey) return;
         if (item.tagName !== 'div' && item.innerText.trim().length > 0) {
-          const spell = spells.find((spell) => spell.includes(item.innerText));
+          const spell = spells.find((spell) => spell.includes(item.innerText.split('|')[0].trim()));
           if (spell) {
             spellPopUp.style.display = 'block';
             spellPopUp.innerHTML = spell;
