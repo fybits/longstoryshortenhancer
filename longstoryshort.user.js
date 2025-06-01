@@ -5,6 +5,7 @@
 // @description  Makes the thing better, I guess.
 // @author       fybits
 // @match        https://longstoryshort.app/characters/digital/*
+// @match        https://aternia.games/i/dnd/character_sheet
 // @icon         <$ICON$>
 // @grant        none
 // @require      https://raw.githubusercontent.com/fybits/longstoryshortenhancer/master/spells.js
@@ -17,23 +18,29 @@ function addStyles() {
         position: fixed;
         display: none;
         top: 50%;
-        width: 300px;
+        width: 400px;
         min-height: 300px;
-        padding: 8px 12px;
+        // padding: 8px 12px;
         margin-left: 12px;
         background: white;
         border: 1px solid gray;
         border-radius: 8px;
-        font-size: 11px;
+        font-size: 0.8rem;
         z-index: 1000;
         box-shadow: 1px 1px 6px 0px #000000aa;
       }
+      div#spell-info-pop-up p {
+        line-height: normal;
+        color: black;
+      }
       .card-body ul.params {
         margin-left: 0;
+        padding-left: 0;
       }
       .card-body ul.params li {
         margin-bottom: 0;
         list-style: none;
+        color:#111111;
       }
       .card-body ul.params li.subsection.desc {
         margin-top: 8px;
@@ -62,7 +69,7 @@ function createSpellInfoPopUp() {
 (function () {
   'use strict';
 
-  console.log('Работаем');
+  console.log(' Darova');
 
   const spellPopUp = createSpellInfoPopUp();
   addStyles();
@@ -77,14 +84,15 @@ function createSpellInfoPopUp() {
   });
 
   setTimeout(() => {
-    const spellsNodes = document.querySelectorAll('.digital-text-block__textarea .ProseMirror p');
-
+    const spellNodesSelector = location.hostname === 'aternia.games' ? '#p3 > input.spell_name' : '.digital-text-block__textarea .ProseMirror p'
+    const spellsNodes = document.querySelectorAll(spellNodesSelector);
     for (let spellNode of spellsNodes.values()) {
       spellNode.addEventListener('mouseover', (event) => {
         const item = event.target;
         if (event.ctrlKey) return;
-        if (item.tagName !== 'div' && item.innerText.trim().length > 0) {
-          const spell = spells.find((spell) => spell.includes(item.innerText.split('|')[0].trim()));
+        const textValue = item.tagName === 'INPUT' ? item.value : item.innerText;
+        if (item.tagName !== 'DIV' && textValue.trim().length > 0) {
+          const spell = spells.find((spell) => spell.includes(textValue.split(',')[0].trim()));
           if (spell) {
             spellPopUp.style.display = 'block';
             spellPopUp.innerHTML = spell;
